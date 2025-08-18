@@ -11,7 +11,7 @@ class lcl_rap_messages_helper DEFINITION INHERITING FROM CL_ABAP_BEHV.
             NEW_MESSAGE_FROM_BAPI_T
                 IMPORTING
                     iv_abap_behv TYPE REF TO CL_ABAP_BEHV
-                    IT_RETURN Type BAPIRET2_T
+                    IT_RETURN Type zcl_bc_rap_utils=>ty_t_BAPIRET2
                 RETURNING
                     VALUE(Rt_RESULT) Type ZCL_BC_RAP_UTILS=>TY_T_ABAP_BEHV_MESSAGES,
 

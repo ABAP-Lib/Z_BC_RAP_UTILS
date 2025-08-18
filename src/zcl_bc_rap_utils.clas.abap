@@ -6,6 +6,26 @@ CLASS zcl_bc_rap_utils DEFINITION
     PUBLIC SECTION.
 
         TYPES:
+            BEGIN OF ty_s_bapiret2,
+              type TYPE bapi_mtype,
+              id TYPE symsgid,
+              number TYPE symsgno,
+              message TYPE bapi_msg,
+              log_no TYPE balognr,
+              log_msg_no TYPE balmnr,
+              message_v1 TYPE symsgv,
+              message_v2 TYPE symsgv,
+              message_v3 TYPE symsgv,
+              message_v4 TYPE symsgv,
+              parameter  TYPE bapi_param,
+              row        TYPE bapi_line,
+              field      TYPE bapi_fld,
+              system     TYPE bapilogsys,
+            END OF ty_s_bapiret2,
+
+            ty_t_bapiret2 TYPE STANDARD TABLE OF bapiret2.
+
+        TYPES:
             TY_T_ABAP_BEHV_MESSAGES TYPE STANDARD TABLE OF REF TO IF_ABAP_BEHV_MESSAGE WITH DEFAULT KEY.
 
         CLASS-METHODS:
@@ -28,7 +48,7 @@ CLASS zcl_bc_rap_utils DEFINITION
             NEW_MESSAGE_FROM_BAPI_T
                 IMPORTING
                     iv_abap_behv TYPE REF TO CL_ABAP_BEHV
-                    IT_RETURN Type BAPIRET2_T
+                    IT_RETURN Type ty_t_bapiret2
                 RETURNING
                     VALUE(Rt_RESULT) Type ZCL_BC_RAP_UTILS=>TY_T_ABAP_BEHV_MESSAGES,
 
@@ -43,13 +63,7 @@ CLASS zcl_bc_rap_utils DEFINITION
                 IMPORTING
                     iv_abap_behv TYPE REF TO CL_ABAP_BEHV
                 RETURNING
-                    VALUE(RV_RESULT) Type Ref To IF_ABAP_BEHV_MESSAGE,
-
-            display_message
-                IMPORTING
-                    iv_message TYPE REF TO  if_abap_behv_message
-                    iv_type TYPE sy-msgty OPTIONAL
-                    iv_like TYPE sy-msgty OPTIONAL.
+                    VALUE(RV_RESULT) Type Ref To IF_ABAP_BEHV_MESSAGE.
 
     PROTECTED SECTION.
     PRIVATE SECTION.
@@ -104,31 +118,6 @@ CLASS zcl_bc_rap_utils IMPLEMENTATION.
                 iv_abap_behv = iv_abap_behv
                 it_return = it_return
         ).
-
-    ENDMETHOD.
-
-    METHOD display_message.
-
-        DATA(lv_type) = cond #(
-            when iv_type is supplied then iv_type
-            else iv_message->if_t100_dyn_msg~msgty
-        ).
-
-        DATA(lv_like) = cond #(
-            when iv_like is supplied then iv_like
-            else lv_type
-        ).
-
-        MESSAGE
-            id iv_message->if_t100_message~t100key-msgid
-            TYPE lv_type
-            NUMBER iv_message->if_t100_message~t100key-msgno
-            DISPLAY LIKE lv_like
-            WITH
-                iv_message->if_t100_dyn_msg~msgv1
-                iv_message->if_t100_dyn_msg~msgv2
-                iv_message->if_t100_dyn_msg~msgv3
-                iv_message->if_t100_dyn_msg~msgv4.
 
     ENDMETHOD.
 
